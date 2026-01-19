@@ -1,13 +1,32 @@
 package org.example.dto;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class CreateBookRequestDto {
+    @NotBlank(message = "Title is required")
+    @Size(max = 255)
     private String title;
+
+    @NotBlank(message = "Author is required")
+    @Size(max = 255)
     private String author;
+
+    @NotBlank(message = "ISBN is required")
+    @Size(max = 50)
     private String isbn;
+
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be positive")
     private BigDecimal price;
+
+    @Size(max = 2000)
     private String description;
+
+    @Size(max = 500)
     private String coverImage;
 
     public String getTitle() {
