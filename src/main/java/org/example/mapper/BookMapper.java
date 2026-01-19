@@ -1,6 +1,5 @@
 package org.example.mapper;
 
-import java.util.List;
 import org.example.dto.BookDto;
 import org.example.dto.CreateBookRequestDto;
 import org.example.model.Book;
@@ -11,6 +10,4 @@ public interface BookMapper {
     BookDto toDto(Book book);
 
     Book toEntity(CreateBookRequestDto dto);
-
-    List<BookDto> toDtoList(List<Book> books);
 }

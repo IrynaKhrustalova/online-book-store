@@ -2,6 +2,7 @@ package org.example.service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.example.dto.BookDto;
 import org.example.dto.CreateBookRequestDto;
 import org.example.exception.EntityNotFoundException;
@@ -30,7 +31,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findAll() {
-        return bookMapper.toDtoList(bookRepository.findAll());
+        return bookRepository.findAllByIsDeletedFalse().stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -39,5 +42,26 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() ->
                         new EntityNotFoundException("Book with id " + id + " not found"));
         return bookMapper.toDto(book);
+    }
+
+    @Override
+    public BookDto update(Long id, CreateBookRequestDto dto) {
+        Book book = bookRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found, id: " + id));
+        book.setTitle(dto.getTitle());
+        book.setAuthor(dto.getAuthor());
+        book.setIsbn(dto.getIsbn());
+        book.setPrice(dto.getPrice());
+        book.setDescription(dto.getDescription());
+        book.setCoverImage(dto.getCoverImage());
+        Book updated = bookRepository.save(book);
+        return bookMapper.toDto(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Book book = bookRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found, id: " + id));
+        bookRepository.delete(book);
     }
 }

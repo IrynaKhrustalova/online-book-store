@@ -9,11 +9,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.util.Objects;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "books", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "isbn")
-})
+@Table(name = "books", uniqueConstraints = {@UniqueConstraint(columnNames = "isbn")})
+@SQLDelete(sql = "UPDATE books SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +33,13 @@ public class Book {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR")
     private String description;
 
     private String coverImage;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     public Book() {
     }
