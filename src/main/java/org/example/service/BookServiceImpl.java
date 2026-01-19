@@ -9,6 +9,7 @@ import org.example.exception.EntityNotFoundException;
 import org.example.mapper.BookMapper;
 import org.example.model.Book;
 import org.example.repository.BookRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,8 +31,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> findAll() {
-        return bookRepository.findAllByIsDeletedFalse().stream()
+    public List<BookDto> findAll(Pageable pageable) {
+        return bookRepository.findAllByIsDeletedFalse(pageable).stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
     }
